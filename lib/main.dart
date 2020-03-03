@@ -83,13 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void handleLoginSuccess(Map user) async {
-    userInfo = user['data'];
+    dynamic userRes = await request.get('/passport/detail/get', {'userId': user['data']['id'], 'currentUserId': user['data']['id']});
+    userInfo = userRes['data'];
     await handleQueryContacts();
     handleStartPullMsg();
     await prefs.setBool('isLogin', true);
     dynamic token = await request.post('/user/getToken', {'userId': user['data']['id'], 'timestamp': DateTime.now().millisecondsSinceEpoch});
-    user['data']['token'] = token['data']['token'];
-    await prefs.setString('userInfo', convert.jsonEncode(user['data']));
+    userInfo['token'] = token['data']['token'];
+    await prefs.setString('userInfo', convert.jsonEncode(userInfo));
     event.emit('loginSuccessToHome', {});
   }
 

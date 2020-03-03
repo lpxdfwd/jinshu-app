@@ -41,6 +41,17 @@ class SettingsState extends State<SettingsPage> {
     Navigator.push(context, new MaterialPageRoute(builder: (context)=> AvatarPage()));
   }
 
+  handleGetSex() {
+    var sex = user['sex'];
+    switch(sex) {
+      case 1:
+        return '男';
+      case 0:
+        return '女';
+    }
+    return '未设置';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,56 +64,191 @@ class SettingsState extends State<SettingsPage> {
         title: Text('账号与安全设置', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: Colors.black)),
       ),
       body: Stack(
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 78.0,
-                  padding: const EdgeInsets.only(left: 14.0, right: 14.0),
-                  color: Colors.white,
-                  margin: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-                  child: GestureDetector(
-                    onTap: handleToAvatar,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text('头像', style: TextStyle(fontSize: 14.0),),
-                        Row(
-                          children: <Widget>[
-                            ClipOval(
-                                child: user['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
-                                  imageUrl: 'http://118.31.126.46:8080/' + user['headUrl'],
-//              placeholder: (context, url) => CircularProgressIndicator(),
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.fill,
-                                )
-                            ),
-                            Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Align (
-              alignment: FractionalOffset(0.5, 0.92),
-              child: MaterialButton(
-                child: Text('退出登录'),
-                height: 48.0,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                height: 78.0,
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0),
                 color: Colors.white,
-                minWidth: 327.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(24))
+                margin: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+                child: GestureDetector(
+                  onTap: handleToAvatar,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('头像', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          ClipOval(
+                              child: user['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
+                                imageUrl: 'http://118.31.126.46:8080/' + user['headUrl'],
+//              placeholder: (context, url) => CircularProgressIndicator(),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.fill,
+                              )
+                          ),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-                onPressed: handleExitLogin,
               ),
-            )
-          ],
+              Container(
+                height: 48.0,
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0),
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 2.0),
+                child: GestureDetector(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('昵称', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          Text(user['userName'], style: TextStyle(fontSize: 14.0, color: Color(0xFFA4A4A4)),),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                height: 48.0,
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0),
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 2.0),
+                child: GestureDetector(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('手机号', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          Text(user['mobile'], style: TextStyle(fontSize: 14.0, color: Color(0xFFA4A4A4)),),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                height: 48.0,
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0),
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 2.0),
+                child: GestureDetector(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('性别', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          Text(handleGetSex(), style: TextStyle(fontSize: 14.0, color: Color(0xFFA4A4A4)),),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                height: 48.0,
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0),
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 2.0),
+                child: GestureDetector(
+                  onTap: () => print('$user'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('年龄', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          Text('${user['ageGroup']} ${user['signStar']}', style: TextStyle(fontSize: 14.0, color: Color(0xFFA4A4A4)),),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                constraints:BoxConstraints(
+                  minHeight: 48.0,
+                ),
+                padding: const EdgeInsets.all(14),
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 6.0),
+                child: GestureDetector(
+                  onTap: () => print('$user'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('签名', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            constraints:BoxConstraints(
+                              maxWidth: 224,
+                            ),
+                            child: Text(user['sign'], softWrap: true, style: TextStyle(fontSize: 14.0, color: Color(0xFFA4A4A4)),),
+                          ),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                height: 48.0,
+                padding: const EdgeInsets.only(left: 14.0, right: 14.0),
+                color: Colors.white,
+                child: GestureDetector(
+                  onTap: () => print('$user'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text('修改密码', style: TextStyle(fontSize: 14.0),),
+                      Row(
+                        children: <Widget>[
+                          Text('已设置', style: TextStyle(fontSize: 14.0, color: Color(0xFFA4A4A4)),),
+                          Icon(Icons.keyboard_arrow_right, color: Color(0xFF999999)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Align (
+            alignment: FractionalOffset(0.5, 0.92),
+            child: MaterialButton(
+              child: Text('退出登录'),
+              height: 48.0,
+              color: Colors.white,
+              minWidth: 327.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(24))
+              ),
+              onPressed: handleExitLogin,
+            ),
+          )
+        ],
       ),
     );
   }
