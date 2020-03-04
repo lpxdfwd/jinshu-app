@@ -5,6 +5,11 @@ import 'package:jinshu_app/utils/eventUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jinshu_app/components/common-methods.dart';
 import 'package:jinshu_app/pages/avatar/avatar.dart';
+import 'package:jinshu_app/components/picker.dart';
+import 'package:jinshu_app/request/request.dart';
+import 'package:jinshu_app/pages/settings/edit-name.dart';
+import 'package:jinshu_app/pages/settings/edit-sign.dart';
+import 'package:jinshu_app/utils/normalUtils.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -22,6 +27,7 @@ class SettingsState extends State<SettingsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    event.on('queryUser', handleQueryUser);
   }
 
   handleExitLogin() {
@@ -41,6 +47,14 @@ class SettingsState extends State<SettingsPage> {
     Navigator.push(context, new MaterialPageRoute(builder: (context)=> AvatarPage()));
   }
 
+  void handleToEditName() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context)=> EditName(user)));
+  }
+
+  void handleToEditSign() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context)=> EditSign(user)));
+  }
+
   handleGetSex() {
     var sex = user['sex'];
     switch(sex) {
@@ -50,6 +64,23 @@ class SettingsState extends State<SettingsPage> {
         return '女';
     }
     return '未设置';
+  }
+
+  handleQueryUser(a) async {
+    dynamic userRes = await request.get('/passport/detail/get', {'userId': user['id'], 'currentUserId': user['id']});
+    if (userRes['data'] != null) {
+      this.setState(() {
+        user = userRes['data'];
+        prefs.setString('userInfo', convert.jsonEncode(userRes['data']));
+      });
+    }
+  }
+
+  handleUpdateUser(value, type) async {
+    var res = await request.post('/passport/detail/update', {'id': user['id'], '$type': value});
+    requestDoneShowToast(res, '', () {
+      handleQueryUser({});
+    });
   }
 
   @override
@@ -104,6 +135,7 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 2.0),
                 child: GestureDetector(
+                  onTap: handleToEditName,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -167,7 +199,17 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 2.0),
                 child: GestureDetector(
-                  onTap: () => print('$user'),
+                  onTap: () => showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext ctx) {
+                      return Container(
+                        child: PickerData(ctx, (y, m, d) {
+                          handleUpdateUser('$y-$m-$m', 'birthDate');
+                          Navigator.of(ctx).pop();
+                        }),
+                      );
+                    }
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -191,7 +233,7 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 6.0),
                 child: GestureDetector(
-                  onTap: () => print('$user'),
+                  onTap: handleToEditSign,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,6 +292,7 @@ class SettingsState extends State<SettingsPage> {
           )
         ],
       ),
+      resizeToAvoidBottomPadding: false
     );
   }
 }

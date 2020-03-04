@@ -59,11 +59,18 @@ dependencies:
   #倒计时插件
   common_utils: ^1.1.1
 
+  #选择图片或拍照
   image_picker: ^0.6.0+8
 
+  #图片剪裁
   image_crop: ^0.3.1
 
+  #请求
   dio: ^3.0.9
+
+  numberpicker: ^1.0.0
+
+  date_format: ^1.0.6
 
 dev_dependencies:
   flutter_test:
