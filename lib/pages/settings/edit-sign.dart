@@ -41,8 +41,9 @@ class EditSignState extends State<EditSign> {
   }
 
   handleUpdateUser() async {
+    if (sign.isEmpty) return;
     var res = await request.post('/passport/detail/update', {'id': widget.user['id'], 'sign': sign});
-    requestDoneShowToast(res, '', () {
+    requestDoneShowToast(res, '修改成功', () {
       event.emit('queryUser', {});
       Navigator.pop(context);
     });
@@ -65,7 +66,7 @@ class EditSignState extends State<EditSign> {
             margin: const EdgeInsets.only(right: 14),
             child: GestureDetector(
               onTap: handleUpdateUser,
-              child: Text('完成', style: TextStyle(fontSize: 14, color: Color(0xFF007AFF))),
+              child: Text('完成', style: TextStyle(fontSize: 14, color: Color(sign.isEmpty ? 0xFF909399 : 0xFF007AFF))),
             ),
           )
         ]

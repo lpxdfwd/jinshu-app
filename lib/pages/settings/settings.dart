@@ -9,6 +9,9 @@ import 'package:jinshu_app/components/picker.dart';
 import 'package:jinshu_app/request/request.dart';
 import 'package:jinshu_app/pages/settings/edit-name.dart';
 import 'package:jinshu_app/pages/settings/edit-sign.dart';
+import 'package:jinshu_app/pages/settings/edit-sex.dart';
+import 'package:jinshu_app/pages/settings/edit-mobile.dart';
+import 'package:jinshu_app/pages/settings/edit-pass.dart';
 import 'package:jinshu_app/utils/normalUtils.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -53,6 +56,18 @@ class SettingsState extends State<SettingsPage> {
 
   void handleToEditSign() {
     Navigator.push(context, new MaterialPageRoute(builder: (context)=> EditSign(user)));
+  }
+
+  void handleToEditSex() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context)=> EditSex(user)));
+  }
+
+  void handleToEditMobile() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context)=> EditMobile(user)));
+  }
+
+  void handleToEditPass() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context)=> EditPass(user)));
   }
 
   handleGetSex() {
@@ -105,6 +120,7 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(top: 2.0, bottom: 2.0),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: handleToAvatar,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,6 +151,7 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 2.0),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: handleToEditName,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,6 +174,8 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 2.0),
                 child: GestureDetector(
+                  onTap: handleToEditMobile,
+                  behavior: HitTestBehavior.opaque,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -178,6 +197,8 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 2.0),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: handleToEditSex,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -199,6 +220,7 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 2.0),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () => showModalBottomSheet(
                     context: context,
                     builder: (BuildContext ctx) {
@@ -233,6 +255,7 @@ class SettingsState extends State<SettingsPage> {
                 color: Colors.white,
                 margin: const EdgeInsets.only(bottom: 6.0),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: handleToEditSign,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -259,7 +282,8 @@ class SettingsState extends State<SettingsPage> {
                 padding: const EdgeInsets.only(left: 14.0, right: 14.0),
                 color: Colors.white,
                 child: GestureDetector(
-                  onTap: () => print('$user'),
+                  behavior: HitTestBehavior.opaque,
+                  onTap: handleToEditPass,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,

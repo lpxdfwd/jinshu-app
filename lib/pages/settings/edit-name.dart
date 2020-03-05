@@ -48,8 +48,9 @@ class EditNameState extends State<EditName> {
   }
 
   handleUpdateUser() async {
+    if (nickName.isEmpty) return;
     var res = await request.post('/passport/detail/update', {'id': widget.user['id'], 'userName': nickName});
-    requestDoneShowToast(res, '', () {
+    requestDoneShowToast(res, '修改成功', () {
       event.emit('queryUser', {});
       Navigator.pop(context);
     });
@@ -72,7 +73,7 @@ class EditNameState extends State<EditName> {
             margin: const EdgeInsets.only(right: 14),
             child: GestureDetector(
               onTap: handleUpdateUser,
-              child: Text('完成', style: TextStyle(fontSize: 14, color: Color(0xFF007AFF))),
+              child: Text('完成', style: TextStyle(fontSize: 14, color: Color(nickName.isEmpty ? 0xFF909399 : 0xFF007AFF))),
             ),
           )
         ]

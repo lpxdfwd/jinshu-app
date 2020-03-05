@@ -52,6 +52,7 @@ class RegisterCode extends State<RegisterCodePage> {
   }
 
   handleGetCode() async {
+    if (codeBtnDisable == true) return;
     Map result = await request.get('/passport/register/code', {'mobile': phoneNumber});
     requestDoneShowToast(result, '', () {});
     this.setState(() {
