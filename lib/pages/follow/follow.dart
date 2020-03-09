@@ -5,6 +5,8 @@ import 'dart:convert' as convert;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:jinshu_app/components/common-methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jinshu_app/utils/eventUtils.dart';
+import 'package:jinshu_app/pages/follow/follow-item.dart';
 
 enum TAB_KEY {
   FOLLOW_ME,
@@ -23,15 +25,34 @@ class FollowScreenState extends State<FollowScreen> {
 
   TAB_KEY tabKey = TAB_KEY.FOLLOW_ME;
 
+  static Event event = new Event();
+
+  bool loading = false;
+
+  List follows = [];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    this.handleQueryFollow({});
+    event.on('followSuccess', handleQueryFollow);
+  }
+
+  handleQueryFollow(a) async {
+    if (follows.length == 0) this.setState(() {loading = true;});
+    Map res = await request.get('/attention/list', {'userId': user['id'], 'type': tabKey == TAB_KEY.FOLLOW_ME ? 1 : 0});
+    List followList = res['data']['users'] ?? [];
+    this.setState(() {
+      follows = followList;
+      loading = false;
+    });
   }
 
   handleSwitchTab(TAB_KEY key) {
     this.setState((){
       tabKey = key;
+      this.handleQueryFollow({});
     });
   }
 
@@ -39,6 +60,7 @@ class FollowScreenState extends State<FollowScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: new Container(
+        alignment: const Alignment(0.0, 1.0),
         color: Colors.white,
         height: double.infinity,
         child: Column(
@@ -86,8 +108,11 @@ class FollowScreenState extends State<FollowScreen> {
                         Text('关注我的', style: TextStyle(fontSize: 14, color: Color(tabKey == TAB_KEY.FOLLOW_ME ? 0xFF282828: 0xFF4F585B))),
                         tabKey == TAB_KEY.FOLLOW_ME ? Container(
                           width: 30,
-                          height: 5,
-                          color: Color(0xFF007BFF)
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Color(0xFF007BFF),
+                            borderRadius: BorderRadius.all(Radius.circular(2)),
+                          ),
                         ) : Container()
                       ],
                     ),
@@ -104,15 +129,36 @@ class FollowScreenState extends State<FollowScreen> {
                       children: <Widget>[
                         Text('我关注的', style: TextStyle(fontSize: 14, color: Color(tabKey == TAB_KEY.FOLLOW_OTHER ? 0xFF282828: 0xFF4F585B))),
                         tabKey == TAB_KEY.FOLLOW_OTHER ? Container(
-                            width: 30,
-                            height: 5,
-                            color: Color(0xFF007BFF)
+                          width: 30,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: Color(0xFF007BFF),
+                            borderRadius: BorderRadius.all(Radius.circular(2)),
+                          ),
                         ) : Container()
                       ],
                     ),
                   ),
                 )
               ],
+            ),
+            loading == true ? Container(
+              alignment: Alignment(0, 0.5),
+              margin: const EdgeInsets.only(top: 20),
+              child: CircularProgressIndicator(),
+            ) : Container(),
+            Expanded(
+              flex: 1,
+              child: follows.length > 0 ? ListView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  return FollowItem(user: follows[index], userId: user['id'].toString());
+                },
+                itemCount: follows.length,
+                shrinkWrap: true,
+              ) : Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: Text('暂无数据', style: TextStyle(fontSize: 14, color: Color(0xFFABB1BD))),
+              ),
             )
           ],
         ),

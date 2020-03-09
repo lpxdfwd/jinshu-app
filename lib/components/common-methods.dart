@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jinshu_app/utils/eventUtils.dart';
 import 'package:jinshu_app/utils/normalUtils.dart';
 import 'package:jinshu_app/pages/chat/chat.dart';
+import 'package:jinshu_app/request/request.dart';
 
 class CommonMethods {
   static SharedPreferences prefs;
@@ -18,6 +19,11 @@ class CommonMethods {
   factory CommonMethods([SharedPreferences preferences]) {
     if (prefs == null) prefs = preferences;
     return instance;
+  }
+
+  handleToggleFollow(String type, String userId, String followId, RequestCallback callback) async {
+    Map res = await request.post('/attention/operate', {'userId': userId, 'targetUserId': followId, 'action': type});
+    requestDoneShowToast(res, '', callback);
   }
 
   handleJoinChat(context, Map item) {
