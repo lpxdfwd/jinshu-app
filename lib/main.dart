@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'dart:convert' as convert;
 import 'package:jinshu_app/utils/socketUtils.dart';
 import 'package:jinshu_app/components/bottomNav.dart';
@@ -14,6 +15,11 @@ import 'package:jinshu_app/components/common-methods.dart';
 //import 'package:flutter_socket_io/socket_io_manager.dart';
 
 void main() async {
+  //强制竖屏
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(MyApp());
 }
 

@@ -114,6 +114,8 @@ flutter:
    - images/sex-man-icon.png
    - images/sex-woman-icon.png
    - images/select-sex.png
+   - images/logo.png
+   - images/top-mask.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
