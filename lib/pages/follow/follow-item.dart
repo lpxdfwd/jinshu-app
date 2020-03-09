@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:jinshu_app/components/common-methods.dart';
 import 'package:jinshu_app/utils/eventUtils.dart';
+import 'package:jinshu_app/pages/me/me-other.dart';
 
 typedef void DeleteContactBack(int id);
 
@@ -18,11 +19,15 @@ class FollowItem extends StatelessWidget {
     event.emit('followSuccess', {});
   }
 
+  handleToUserPage(context) {
+    Navigator.push(context, new MaterialPageRoute(builder: (context)=>  MeOtherScreen(user: user, userId: userId)));
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return InkWell(
-      onTap: () {},
+      onTap: () =>handleToUserPage(context),
       child: Container(
         height: 58,
         margin: const EdgeInsets.only(top: 10, bottom: 10),
@@ -35,18 +40,18 @@ class FollowItem extends StatelessWidget {
               height: 54,
               margin: const EdgeInsets.only(right: 10),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(27)),
-                  border: Border.all(color: Color(0xFF007BFF), width: 2)
+                borderRadius: BorderRadius.all(Radius.circular(27)),
+                border: Border.all(color: Color(0xFF007BFF), width: 2)
               ),
               child: GestureDetector(
                 onTap: (){},
                 child: ClipOval(
-                    child: user['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
-                      imageUrl: 'http://118.31.126.46:8080/' + user['headUrl'],
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.fill,
-                    )
+                  child: user['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
+                    imageUrl: 'http://118.31.126.46:8080/' + user['headUrl'],
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.fill,
+                  )
                 ),
               ),
             ),

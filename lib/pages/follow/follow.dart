@@ -1,8 +1,6 @@
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:jinshu_app/request/request.dart';
 import 'dart:convert' as convert;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:jinshu_app/components/common-methods.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jinshu_app/utils/eventUtils.dart';
@@ -96,7 +94,7 @@ class FollowScreenState extends State<FollowScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: 30,
+                  height: 28,
                   width: 82,
                   margin: const EdgeInsets.only(right: 50),
                   child: GestureDetector(
@@ -107,8 +105,8 @@ class FollowScreenState extends State<FollowScreen> {
                       children: <Widget>[
                         Text('关注我的', style: TextStyle(fontSize: 14, color: Color(tabKey == TAB_KEY.FOLLOW_ME ? 0xFF282828: 0xFF4F585B))),
                         tabKey == TAB_KEY.FOLLOW_ME ? Container(
-                          width: 30,
-                          height: 4,
+                          width: 40,
+                          height: 3,
                           decoration: BoxDecoration(
                             color: Color(0xFF007BFF),
                             borderRadius: BorderRadius.all(Radius.circular(2)),
@@ -119,7 +117,7 @@ class FollowScreenState extends State<FollowScreen> {
                   ),
                 ),
                 Container(
-                  height: 32,
+                  height: 28,
                   width: 82,
                   child: GestureDetector(
                     onTap: () => handleSwitchTab(TAB_KEY.FOLLOW_OTHER),
@@ -129,8 +127,8 @@ class FollowScreenState extends State<FollowScreen> {
                       children: <Widget>[
                         Text('我关注的', style: TextStyle(fontSize: 14, color: Color(tabKey == TAB_KEY.FOLLOW_OTHER ? 0xFF282828: 0xFF4F585B))),
                         tabKey == TAB_KEY.FOLLOW_OTHER ? Container(
-                          width: 30,
-                          height: 5,
+                          width: 40,
+                          height: 3,
                           decoration: BoxDecoration(
                             color: Color(0xFF007BFF),
                             borderRadius: BorderRadius.all(Radius.circular(2)),

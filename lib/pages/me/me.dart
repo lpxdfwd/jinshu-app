@@ -76,6 +76,7 @@ class MeScreenState extends State<MeScreen> {
               top: 273,
               right: 0,
               left: 0,
+              bottom: 0,
               child: Container(
                 padding: const EdgeInsets.only(top: 34, left: 29, right: 26),
                 width: double.infinity,
@@ -109,7 +110,7 @@ class MeScreenState extends State<MeScreen> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 12),
-                      child: Text(user['sign'], style: TextStyle(fontSize: 14, color: Color(0xFF9BA2B1)),),
+                      child: Text(user['sign'] ?? '这个人很懒，什么都没写～', style: TextStyle(fontSize: 14, color: Color(0xFF9BA2B1)),),
                     ),
                     Container(
                       width: double.infinity,
@@ -174,6 +175,7 @@ class MeScreenState extends State<MeScreen> {
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
                   color: Colors.white,
+                  border: Border.all(color: Color(0xFFeeeeee), width: 3),
                   borderRadius:BorderRadius.all(Radius.circular(37)),
                 ),
                 child: ClipOval(
