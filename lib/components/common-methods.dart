@@ -14,6 +14,8 @@ class CommonMethods {
 
   Event event = new Event();
 
+  Request request = Request();
+
   static CommonMethods instance = new CommonMethods._internal();
 
   factory CommonMethods([SharedPreferences preferences]) {

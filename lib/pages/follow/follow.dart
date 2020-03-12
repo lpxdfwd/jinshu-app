@@ -19,6 +19,8 @@ class FollowScreen extends StatefulWidget {
 class FollowScreenState extends State<FollowScreen> {
   SharedPreferences prefs = CommonMethods.prefs;
 
+  Request request = Request();
+
   Map user = convert.jsonDecode(CommonMethods.prefs.getString('userInfo'));
 
   TAB_KEY tabKey = TAB_KEY.FOLLOW_ME;

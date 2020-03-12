@@ -24,6 +24,8 @@ class RegisterCode extends State<RegisterCodePage> {
 
   String phoneNumber;
 
+  Request request = Request();
+
   String registerCode = '';
 
   RegisterCode(String phone) {

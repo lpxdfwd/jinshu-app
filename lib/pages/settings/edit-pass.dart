@@ -17,6 +17,8 @@ class EditPass extends StatefulWidget {
 class EditPassState extends State<EditPass> {
   Event event = new Event();
 
+  Request request = Request();
+
   final TextEditingController passController = TextEditingController();
 
   final TextEditingController confirmPassController = TextEditingController();

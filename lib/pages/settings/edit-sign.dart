@@ -17,6 +17,8 @@ class EditSignState extends State<EditSign> {
 
   Event event = new Event();
 
+  Request request = Request();
+
   handleInputChange(value) {
     setState(() {
       sign = value;

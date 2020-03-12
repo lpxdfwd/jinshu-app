@@ -16,6 +16,8 @@ class EditPassState extends State<EditPassPage> {
 
   String phoneNumber = '';
 
+  Request request = Request();
+
   final TextEditingController _inputController = TextEditingController();
 
   handleInputChange(value) {

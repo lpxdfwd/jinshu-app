@@ -23,6 +23,8 @@ class EditPassConfirmPage extends StatefulWidget {
 class EditPassConfirm extends State<EditPassConfirmPage> {
   SharedPreferences prefs = CommonMethods.prefs;
 
+  Request request = Request();
+
   String phoneNumber;
 
   String phoneCode;

@@ -31,6 +31,8 @@ class RegisterPass extends State<RegisterPassPage> {
 
   String passwordConfirm = '';
 
+  Request request = Request();
+
   Event event = new Event();
 
   RegisterPass(String phone, String code) {

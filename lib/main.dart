@@ -63,6 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Map userInfo;
 
+  Request request;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -76,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void prefsInit () async {
     prefs = await SharedPreferences.getInstance();
     CommonMethods(prefs);
+    request = Request(prefs);
     bool loginStatus = prefs.getBool('isLogin');
     setState(() {
       loading = true;
@@ -84,15 +87,18 @@ class _MyHomePageState extends State<MyHomePage> {
     if (loginStatus == true) {
       userInfo = convert.jsonDecode(prefs.getString('userInfo'));
       handleQueryContacts();
-      handleStartPullMsg();
+//      handleStartPullMsg();
+      handleConnectSocket();
     }
   }
 
   void handleLoginSuccess(Map user) async {
+    print('#############$user');
     dynamic userRes = await request.get('/passport/detail/get', {'userId': user['data']['id'], 'currentUserId': user['data']['id']});
     userInfo = userRes['data'];
+    print('@@@@@@@@@@$userInfo');
     await handleQueryContacts();
-    handleStartPullMsg();
+//    handleStartPullMsg();
     await prefs.setBool('isLogin', true);
     dynamic token = await request.post('/user/getToken', {'userId': user['data']['id'], 'timestamp': DateTime.now().millisecondsSinceEpoch});
     userInfo['token'] = token['data']['token'];
@@ -116,18 +122,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void handleStartPullMsg() {
-    if(socketTimer != null) {
-      socketTimer.cancel();
-    }
-    createTimeInterVal((timer) {
-      socketTimer = timer;
-      SocketUtils.handlePullNewMsg({
-        'userId': userInfo['id'],
-        'token': userInfo['token'],
-        'tokenTimestamp': DateTime.now().millisecondsSinceEpoch
-      });
-    }, 1000);
+//  void handleStartPullMsg() {
+//    if(socketTimer != null) {
+//      socketTimer.cancel();
+//    }
+//    createTimeInterVal((timer) {
+//      socketTimer = timer;
+//      SocketUtils.handlePullNewMsg({
+//        'userId': userInfo['id'],
+//        'token': userInfo['token'],
+//        'tokenTimestamp': DateTime.now().millisecondsSinceEpoch
+//      });
+//    }, 1000);
+//  }
+
+  handleConnectSocket() {
+
   }
 
   handleExitLogin (a) async {

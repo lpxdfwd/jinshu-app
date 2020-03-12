@@ -17,6 +17,8 @@ class EditNameState extends State<EditName> {
 
   Event event = new Event();
 
+  Request request = Request();
+
   handleClearValue() {
     _inputController.text = '';
     setState(() {

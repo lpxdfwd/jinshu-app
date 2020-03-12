@@ -18,6 +18,8 @@ class AvatarPage extends StatefulWidget {
 class AvatarState extends State<AvatarPage> {
   SharedPreferences prefs = CommonMethods.prefs;
 
+  Request request = Request();
+
   Event event = new Event();
 
   Map user = convert.jsonDecode(CommonMethods.prefs.getString('userInfo'));

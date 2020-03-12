@@ -16,6 +16,8 @@ class RegisterState extends State<RegisterPage> {
 
   String phoneNumber = '';
 
+  Request request = Request();
+
   final TextEditingController _inputController = TextEditingController();
 
   handleInputChange(value) {

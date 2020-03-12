@@ -21,6 +21,8 @@ class EditMobileState extends State<EditMobile> {
 
   final TextEditingController codeController = TextEditingController();
 
+  Request request = Request();
+
   handleChangeValue(String type, String value) {
     setState(() {
       switch(type) {

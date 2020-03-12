@@ -19,6 +19,8 @@ class LoginPassPage extends StatefulWidget {
 class LoginPass extends State<LoginPassPage> {
   final TextEditingController _inputController = TextEditingController();
 
+  Request request = Request();
+
   String phoneNumber = '';
 
   String password = '';

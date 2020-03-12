@@ -27,6 +27,8 @@ class ChatScreenState extends State<ChatScreen> {
 
   Map chatUser = {};
 
+  bool isRoot = false;
+
   String sendVal = '';
 
   Event event = new Event();
@@ -40,6 +42,8 @@ class ChatScreenState extends State<ChatScreen> {
     prefs = prefsInstance;
     user = convert.jsonDecode(prefs.getString('userInfo'));
     chatUser = convert.jsonDecode(prefs.getString('chatUser'));
+    Map rootOwn = convert.jsonDecode(prefs.getString('rootOwn'));
+    isRoot = chatUser['id'] == rootOwn['id'];
   }
 
   @override
@@ -52,6 +56,7 @@ class ChatScreenState extends State<ChatScreen> {
   dispose() {
     super.dispose();
     clearEvent();
+    sendController.dispose();
   }
 
   clearEvent() {
@@ -97,10 +102,13 @@ class ChatScreenState extends State<ChatScreen> {
 //            child: new Text(item['content']),
 //          )
         Container(
-          margin: const EdgeInsets.only(top: 12.0),
+          margin: const EdgeInsets.only(bottom: 27.0),
+          constraints: BoxConstraints(
+              maxWidth: 316
+          ),
           child: Row(
             mainAxisAlignment: isOwn ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               !isOwn ? ClipOval(
                   child: chatUser['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
@@ -110,9 +118,17 @@ class ChatScreenState extends State<ChatScreen> {
                     fit: BoxFit.fill,
                   )
               ) : Container(
-                  margin: const EdgeInsets.only(right: 12.0),
-                  width: 250,
-                  child: Text(item['content'], softWrap: true)
+                  decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: [Color(0xFF3699FF), Color(0xFF30D8FC)]),
+                      borderRadius: BorderRadius.all(Radius.circular(6))
+                  ),
+                  margin: const EdgeInsets.only(right: 16.0),
+                  padding: const EdgeInsets.only(left: 14, right: 14, top: 12, bottom: 12),
+                  alignment: Alignment.centerRight,
+                  constraints: BoxConstraints(
+                      minHeight: 20
+                  ),
+                  child: Text(item['content'], softWrap: true, textAlign: TextAlign.right, style: TextStyle(color: Colors.white))
               ),
               isOwn ? ClipOval(
                   child: user['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
@@ -122,9 +138,18 @@ class ChatScreenState extends State<ChatScreen> {
                     fit: BoxFit.fill,
                   )
               ) : Container(
-                  margin: const EdgeInsets.only(left: 12.0),
-                  width: 250,
-                  child: Text(item['content'], softWrap: true)
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Color(0xFF007BFF), width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(6))
+                  ),
+                  margin: const EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.only(left: 14, right: 14, top: 12, bottom: 12),
+                  alignment: Alignment.centerLeft,
+                  constraints: BoxConstraints(
+                      minHeight: 20
+                  ),
+                  child: Text(item['content'], softWrap: true, textAlign: TextAlign.left)
               ),
             ],
           ),
@@ -154,32 +179,64 @@ class ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(chatUser['userName'] ?? 'chat'),
-      ),
       body: Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  decoration: isRoot ? BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('images/root-head-bg.png'),
+                      fit: BoxFit.cover,
+                     ),
+                  ) : null,
+                  child: AppBar(
+                    backgroundColor: isRoot ? Colors.transparent : Colors.white,
+                    elevation: 0,
+                    iconTheme: IconThemeData(
+                        color: isRoot ? Colors.white : Colors.black
+                    ),
+                    title: Text(isRoot ? '小锦' : chatUser['userName'], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isRoot ? Colors.white : Colors.black)),
+                  ),
+                ),
                 Expanded(
                   flex: 1,
                   child: Container(
+                      padding: const EdgeInsets.only(top: 18, right: 16, left: 16),
                       child: renderMsgList(),
                       alignment: Alignment.center,
                       decoration: new BoxDecoration(
-                        color: Colors.white,
+                        color: Color(0xFFF7F7F7),
                       )
                   ),
                 ),
-                TextField(
-                    autofocus: false,//是否自动获取焦点
-                    textInputAction: TextInputAction.send,
-                    decoration: InputDecoration(//InputDecoration：用于控制TextField的外观显示，如提示文本、背景颜色、边框等。
-                      hintText: "请输入要发送的消息",
-                      prefixIcon: Icon(Icons.message),
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  color: Colors.white,
+                  padding: const EdgeInsets.only(left: 24, right: 24),
+                  alignment: Alignment.center,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: 28,
                     ),
-                    controller: sendController,
-                    onSubmitted: handleSendMsg,
+                    child: TextField(
+                      style: TextStyle(fontSize: 14),
+                      controller: sendController,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: handleSendMsg,
+//                    onChanged: () {},
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(18, 7, 18, 7),
+                        hintText: '',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide.none),
+                        filled: true,
+                        fillColor: Color(0xFFFAFAFB),
+                      ),
+                    ),
+                  ),
                 ),
               ]
           )

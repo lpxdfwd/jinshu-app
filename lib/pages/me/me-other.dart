@@ -21,6 +21,8 @@ class MeOtherScreen extends StatefulWidget {
 class MeOtherState extends State<MeOtherScreen> {
   SharedPreferences prefs = CommonMethods.prefs;
 
+  Request request = Request();
+
   Event event = new Event();
 
   bool switchValue = true;

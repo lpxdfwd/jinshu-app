@@ -72,3 +72,14 @@ void requestDoneShowToast(Map result, String successText, RequestCallback callba
     );
   }
 }
+
+Map formatSearchString(String s) {
+  if (s == null) return {};
+  List seaerchList = s.split('&');
+  Map searchMap = {};
+  seaerchList.forEach((item) {
+    List itemList = item.split('=');
+    searchMap[itemList[0]] = itemList[1];
+  });
+  return searchMap;
+}

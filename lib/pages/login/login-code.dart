@@ -20,6 +20,8 @@ class LoginCodePage extends StatefulWidget {
 class LoginCode extends State<LoginCodePage> {
   final TextEditingController _inputController = TextEditingController();
 
+  Request request = Request();
+
   String phoneNumber = '';
 
   String verifyCode = '';

@@ -15,6 +15,8 @@ class EditSex extends StatefulWidget {
 class EditSexState extends State<EditSex> {
   Event event = new Event();
 
+  Request request = Request();
+
   handleChangeValue(value) {
     setState(() {
       sex = value;

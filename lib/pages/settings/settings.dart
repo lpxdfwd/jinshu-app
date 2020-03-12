@@ -24,6 +24,8 @@ class SettingsState extends State<SettingsPage> {
 
   Event event = new Event();
 
+  Request request = Request();
+
   Map user = convert.jsonDecode(CommonMethods.prefs.getString('userInfo'));
 
   @override
