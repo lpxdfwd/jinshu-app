@@ -42,10 +42,7 @@ class Request {
     });
     String cookieString = response.headers['set-cookie'];
     String wuyanSessionId = formatSearchString(cookieString)['wuyan-session-id'];
-    if (wuyanSessionId != null) {
-      print('@@@@@@@@@$wuyanSessionId');
-    }
-
+    if (wuyanSessionId != null) prefs.setString('wuyanSessionId', wuyanSessionId);
     Map responseData = json.decode(response.body) != null ? json.decode(response.body) : {};
     return responseData;
   }

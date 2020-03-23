@@ -172,7 +172,6 @@ class MeScreenState extends State<MeScreen> {
                 alignment: FractionalOffset(0.5, 0),
                 width: 68,
                 height: 68,
-                padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color: Color(0xFFeeeeee), width: 3),

@@ -56,6 +56,7 @@ class SocketUtils {
     socket.onReconnectFailed(_handleReconnectError);
     socket.onError(_handleError);
     socket.on('PuMsg', _handleDataEvent);
+    socket.on('ConnectActionApp', _handleConnectBack);
   }
 
   _handleDataEvent(data) {
@@ -107,6 +108,19 @@ class SocketUtils {
         sessionKey = msg['sessionKey'];
         joinSuccess = true;
         break;
+    }
+  }
+
+  static handleConnect(Map data) {
+    socket.emit('OnConnectApp', [data]);
+  }
+
+  _handleConnectBack(data) {
+    print('result:$data');
+    if(data['action'] == 'connect_success')  {
+      event.emit('connectSuccess');
+    } else {
+      event.emit('connectError');
     }
   }
 

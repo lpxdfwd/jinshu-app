@@ -11,8 +11,6 @@ import 'package:jinshu_app/request/request.dart';
 import 'package:jinshu_app/utils/normalUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jinshu_app/components/common-methods.dart';
-//import 'package:flutter_socket_io/flutter_socket_io.dart';
-//import 'package:flutter_socket_io/socket_io_manager.dart';
 
 void main() async {
   //强制竖屏
@@ -50,7 +48,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Event event = new Event();
 
   SharedPreferences prefs;
@@ -69,10 +67,38 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    event.emit('setContactType', {'type': 'loading'});
     socketInit();
     prefsInit();
     event.on('loginSuccess', handleLoginSuccess);
     event.on('exitLogin', handleExitLogin);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.inactive:// 处于这种状态的应用程序应该假设它们可能在任何时候暂停。
+        break;
+      case AppLifecycleState.resumed:// 应用程序可见，前台
+        await socketInit();
+        handleConnectSocket();
+        break;
+      case AppLifecycleState.paused: // 应用程序不可见，后台
+        event.emit('checkBackstage');
+        event.emit('setContactType', {'type': 'loading'});
+        break;
+      case AppLifecycleState.suspending: // 申请将暂时暂停
+        break;
+    }
   }
 
   void prefsInit () async {
@@ -87,18 +113,15 @@ class _MyHomePageState extends State<MyHomePage> {
     if (loginStatus == true) {
       userInfo = convert.jsonDecode(prefs.getString('userInfo'));
       handleQueryContacts();
-//      handleStartPullMsg();
       handleConnectSocket();
     }
   }
 
   void handleLoginSuccess(Map user) async {
-    print('#############$user');
     dynamic userRes = await request.get('/passport/detail/get', {'userId': user['data']['id'], 'currentUserId': user['data']['id']});
     userInfo = userRes['data'];
-    print('@@@@@@@@@@$userInfo');
     await handleQueryContacts();
-//    handleStartPullMsg();
+    handleConnectSocket();
     await prefs.setBool('isLogin', true);
     dynamic token = await request.post('/user/getToken', {'userId': user['data']['id'], 'timestamp': DateTime.now().millisecondsSinceEpoch});
     userInfo['token'] = token['data']['token'];
@@ -137,7 +160,13 @@ class _MyHomePageState extends State<MyHomePage> {
 //  }
 
   handleConnectSocket() {
-
+    print('触发socket链接事件');
+    SocketUtils.handleConnect({
+      'wuyanSessionId': prefs.getString('wuyanSessionId'),
+      'senderId': userInfo['id'],
+      'app_os': 'android',
+      'app_type': 'phone'
+    });
   }
 
   handleExitLogin (a) async {

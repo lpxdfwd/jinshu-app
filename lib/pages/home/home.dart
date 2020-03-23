@@ -20,6 +20,8 @@ class HomeScreenState extends State<HomeScreen> {
 
   Event event = new Event();
 
+  String connectType = 'success';
+
 
   handleQueryContacts(data) async {
     userData = convert.jsonDecode(prefs.getString('contacts'));
@@ -43,6 +45,27 @@ class HomeScreenState extends State<HomeScreen> {
     super.initState();
     prefsInit();
     event.on('refreshContacts', handleQueryContacts);
+    event.on('connectSuccess', handleConnectSuccess);
+    event.on('connectError', handleConnectError);
+    event.on('setContactType', handleSetContactType);
+  }
+
+  handleConnectSuccess(a) {
+    this.setState(() {
+      connectType = 'success';
+    });
+  }
+
+  handleConnectError(a) {
+    this.setState(() {
+      connectType = 'error';
+    });
+  }
+
+  handleSetContactType(a) {
+    this.setState(() {
+      connectType = a['type'];
+    });
   }
 
   @override
@@ -84,7 +107,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
-        child: HomeAppBar(),
+        child: HomeAppBar(connectType),
       ),
       body: Center(
         child: ListView.builder(

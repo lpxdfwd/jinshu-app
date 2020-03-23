@@ -1,6 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeAppBar extends PreferredSize {
+  String connectType;
+
+  HomeAppBar(this.connectType);
+
+  String getTitleText () {
+    switch(connectType) {
+      case 'loading':
+        return '连接...';
+      case 'success':
+        return '锦书';
+      default:
+        return '未连接';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -14,10 +30,11 @@ class HomeAppBar extends PreferredSize {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Container(
-              width: 36.0,
+              width: 80.0,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('锦书', style: TextStyle(fontSize: 18.0, color: Color(0xFF282828))),
+                  Text(getTitleText(), style: TextStyle(fontSize: 18.0, color: Color(0xFF282828))),
                   Image.asset('images/tab-jinshu-icon.png', width: 34.0, height: 7.0, fit: BoxFit.fill)
                 ],
               ),
