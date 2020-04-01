@@ -41,7 +41,6 @@ class MeOtherState extends State<MeOtherScreen> {
 
   void initUser() async {
     Map res = await request.get('/passport/detail/get', {'userId': widget.user['userId'], 'currentUserId': widget.userId});
-    print('${res['data']}@@@@${widget.user['userId']}@@@@${widget.userId}');
     if (res['data'] != null) this.setState(() {user = res['data'];});
   }
 
@@ -79,6 +78,7 @@ class MeOtherState extends State<MeOtherScreen> {
                 ),
               ),
             ),
+
             Positioned(
               top: 273,
               right: 0,
@@ -236,6 +236,36 @@ class MeOtherState extends State<MeOtherScreen> {
                   ],
                 ),
               )
+            ),
+            Positioned(
+                bottom: 19,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      alignment: FractionalOffset(0.5, 0),
+                      width: 330,
+                      height: 54,
+                      decoration: BoxDecoration(
+                          color: Color(0xFF3699FF),
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => CommonMethods().handleJoinChat(context, user),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text('发消息', style: TextStyle(color: Colors.white, fontSize: 18), textAlign: TextAlign.center,)
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                )
             ),
             Positioned(
               top: 236,

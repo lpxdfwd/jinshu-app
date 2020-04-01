@@ -44,7 +44,7 @@ class HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     prefsInit();
-    event.on('refreshContacts', handleQueryContacts);
+//    event.on('refreshContacts', handleQueryContacts);
     event.on('connectSuccess', handleConnectSuccess);
     event.on('connectError', handleConnectError);
     event.on('setContactType', handleSetContactType);
@@ -71,6 +71,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   dispose() {
     super.dispose();
+    userData = null;
   }
 
   void prefsInit () async {

@@ -34,7 +34,7 @@ class ChatScreenState extends State<ChatScreen> {
   Event event = new Event();
 
   MessageCache messageCache;
-  
+
   List msgList = [];
 
   ChatScreenState(prefsInstance) {
@@ -79,7 +79,7 @@ class ChatScreenState extends State<ChatScreen> {
         }
       });
       await prefs.setString('contacts', convert.jsonEncode(contacts));
-      event.emit('refreshContacts', {});
+//      event.emit('refreshContacts', {});
     }
     setState(() {
       msgList = messageCache.getMessageList(SocketUtils.sessionKey);
@@ -164,13 +164,17 @@ class ChatScreenState extends State<ChatScreen> {
   void handleSendMsg(val) {
     print('发送消息: $val');
     SocketUtils.sendMessage({
+      'wuyanSessionId': prefs.getString('wuyanSessionId'),
+      'sessionId': SocketUtils.sessionId,
+      'sessionKey': SocketUtils.sessionKey,
       'content': val,
       'senderId': user['id'],
       'senderUseNick': user['userName'],
       'receiverId': chatUser['id'],
-      'token': user['token'],
-      'tokenTimestamp': DateTime.now().millisecondsSinceEpoch,
+      'msgCreateTime': DateTime.now().millisecondsSinceEpoch,
       'msgType': 1,
+      'sessionType': 1,
+      'sendMsgId': SocketUtils.getSendMsgId(),
       'role': chatUser['role']
     });
     sendController.clear();

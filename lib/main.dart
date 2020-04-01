@@ -71,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     socketInit();
     prefsInit();
     event.on('loginSuccess', handleLoginSuccess);
+    event.on('refreshContacts', handleFormatContacts);
     event.on('exitLogin', handleExitLogin);
     WidgetsBinding.instance.addObserver(this);
   }
@@ -127,6 +128,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     userInfo['token'] = token['data']['token'];
     await prefs.setString('userInfo', convert.jsonEncode(userInfo));
     event.emit('loginSuccessToHome', {});
+  }
+
+  handleFormatContacts () {
+    
   }
 
   handleQueryContacts() async {

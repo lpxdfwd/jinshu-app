@@ -32,6 +32,8 @@ class SocketUtils {
 
   static Map chatInfo;
 
+  static double sendMsgId = 0;
+
   void prefsInit () async {
     prefs = await SharedPreferences.getInstance();
     String userString = prefs.getString('userInfo');
@@ -57,6 +59,7 @@ class SocketUtils {
     socket.onError(_handleError);
     socket.on('PuMsg', _handleDataEvent);
     socket.on('ConnectActionApp', _handleConnectBack);
+    socket.on('OnMsgAckApp', _handleSendMsgBack);
   }
 
   _handleDataEvent(data) {
@@ -87,6 +90,11 @@ class SocketUtils {
     socket.emit(isSug == true ? 'CnnSugUser' : 'CnnUser', [chat]);
   }
 
+  static String getSendMsgId() {
+    sendMsgId = sendMsgId + 1;
+    return '_send_msg_id_$sendMsgId';
+  }
+
   static sendMessage(data) {
     if (joinSuccess == false) {
       print('正在加入聊天室，请稍后再试！');
@@ -94,7 +102,19 @@ class SocketUtils {
       try {
         data['sessionKey'] = sessionKey;
         data['sessionId'] = sessionId;
-        socket.emit('OnMSG', [data]);
+        socket.emit('OnMsgApp', [data]);
+      } catch (e) {
+        print('error: $e');
+      }
+    }
+  }
+
+  static queryHistoryMsg(data) {
+    if (joinSuccess == false) {
+      print('正在加入聊天室，请稍后再试！');
+    } else {
+      try {
+        socket.emit('PullHisMsgApp', [data]);
       } catch (e) {
         print('error: $e');
       }
@@ -122,6 +142,10 @@ class SocketUtils {
     } else {
       event.emit('connectError');
     }
+  }
+
+  _handleSendMsgBack(data) {
+    print('sendMsgResult:$data');
   }
 
   _handleFeedbackMsg(lastMsgId) {
