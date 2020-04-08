@@ -73,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     event.on('loginSuccess', handleLoginSuccess);
     event.on('refreshContacts', handleFormatContacts);
     event.on('exitLogin', handleExitLogin);
+    event.on('connectSuccess', handleConnectSocket);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -91,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed:// 应用程序可见，前台
         await socketInit();
-        handleConnectSocket();
+        handleConnectSocket({});
         break;
       case AppLifecycleState.paused: // 应用程序不可见，后台
         event.emit('checkBackstage');
@@ -114,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     if (loginStatus == true) {
       userInfo = convert.jsonDecode(prefs.getString('userInfo'));
       handleQueryContacts();
-      handleConnectSocket();
+      handleConnectSocket({});
     }
   }
 
@@ -122,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     dynamic userRes = await request.get('/passport/detail/get', {'userId': user['data']['id'], 'currentUserId': user['data']['id']});
     userInfo = userRes['data'];
     await handleQueryContacts();
-    handleConnectSocket();
+    handleConnectSocket({});
     await prefs.setBool('isLogin', true);
     dynamic token = await request.post('/user/getToken', {'userId': user['data']['id'], 'timestamp': DateTime.now().millisecondsSinceEpoch});
     userInfo['token'] = token['data']['token'];
@@ -130,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     event.emit('loginSuccessToHome', {});
   }
 
-  handleFormatContacts () {
+  handleFormatContacts (a) {
     
   }
 
@@ -164,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 //    }, 1000);
 //  }
 
-  handleConnectSocket() {
+  handleConnectSocket(a) {
     print('触发socket链接事件');
     SocketUtils.handleConnect({
       'wuyanSessionId': prefs.getString('wuyanSessionId'),

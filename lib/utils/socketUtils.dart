@@ -32,7 +32,7 @@ class SocketUtils {
 
   static Map chatInfo;
 
-  static double sendMsgId = 0;
+  static int sendMsgId = 0;
 
   void prefsInit () async {
     prefs = await SharedPreferences.getInstance();
@@ -60,6 +60,7 @@ class SocketUtils {
     socket.on('PuMsg', _handleDataEvent);
     socket.on('ConnectActionApp', _handleConnectBack);
     socket.on('OnMsgAckApp', _handleSendMsgBack);
+    socket.on('PuHisMsgApp', __handlePuHisMsgBack);
   }
 
   _handleDataEvent(data) {
@@ -90,9 +91,9 @@ class SocketUtils {
     socket.emit(isSug == true ? 'CnnSugUser' : 'CnnUser', [chat]);
   }
 
-  static String getSendMsgId() {
+  static int getSendMsgId() {
     sendMsgId = sendMsgId + 1;
-    return '_send_msg_id_$sendMsgId';
+    return sendMsgId;
   }
 
   static sendMessage(data) {
@@ -135,6 +136,10 @@ class SocketUtils {
     socket.emit('OnConnectApp', [data]);
   }
 
+  __handlePuHisMsgBack(data) {
+    print('PuHisMsgResult:$data');
+  }
+
   _handleConnectBack(data) {
     print('result:$data');
     if(data['action'] == 'connect_success')  {
@@ -146,6 +151,7 @@ class SocketUtils {
 
   _handleSendMsgBack(data) {
     print('sendMsgResult:$data');
+    event.emit('sendSuccess', data);
   }
 
   _handleFeedbackMsg(lastMsgId) {
@@ -164,6 +170,7 @@ class SocketUtils {
 
   _handleConnect(res) {
     print('------------socket链接成功--------------');
+    event.emit('connectSuccess');
     connectStatus = true;
   }
 
@@ -175,6 +182,7 @@ class SocketUtils {
 
   _handleReconnect(res) {
     print('------------socket重连成功--------------');
+    event.emit('connectSuccess');
     connectStatus = true;
     reconnectCount += 1;
   }

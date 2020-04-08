@@ -6,6 +6,8 @@ class MessageCache {
 
   static Map messageCacheMap;
 
+  static Map sendLoadingMap;
+
   MessageCache._internal();
 
   static MessageCache _instance = new MessageCache._internal();
@@ -45,6 +47,29 @@ class MessageCache {
     prefs.setString('messageMap', convert.jsonEncode(messageCacheMap));
 
     return messageCacheMap[key];
+  }
+
+  List setSendSuccess(String key, int sendId, Map msgItem) {
+    if (!messageCacheMap.containsKey(key)) {
+      messageCacheMap[key] = new List();
+    }
+    print('asdasdasdasdasd');
+    if (sendLoadingMap.containsKey(sendId)){
+      int index = sendLoadingMap[sendId];
+
+      if (messageCacheMap[key].length > index && messageCacheMap[key][index] != null) {
+        messageCacheMap[key][index]['msgId'] = msgItem['msgId'];
+        messageCacheMap[key][index]['isLoading'] = false;
+
+      }
+    }
+    prefs.setString('messageMap', convert.jsonEncode(messageCacheMap));
+    return messageCacheMap[key];
+  }
+
+  setLoadingMap(int sendId, int index) {
+    if (sendLoadingMap == null) sendLoadingMap = {};
+    sendLoadingMap[sendId] = index;
   }
 
   void clear() {

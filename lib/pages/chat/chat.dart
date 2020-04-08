@@ -4,6 +4,7 @@ import 'package:jinshu_app/utils/socketUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jinshu_app/utils/eventUtils.dart';
 import 'package:jinshu_app/utils/messageCache.dart';
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -37,6 +38,10 @@ class ChatScreenState extends State<ChatScreen> {
 
   List msgList = [];
 
+  bool isHistory = false;
+
+  ScrollController _scrollController = ScrollController();
+
   ChatScreenState(prefsInstance) {
     messageCache = new MessageCache(prefsInstance);
     prefs = prefsInstance;
@@ -50,6 +55,15 @@ class ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     initEvent();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == 0) {
+        SocketUtils.queryHistoryMsg({
+          'wuyanSessionId': prefs.getString('wuyanSessionId'),
+          'sessionId': SocketUtils.sessionId,
+          'lastHisMsgId': (messageCache.getMessageList(SocketUtils.sessionKey) == null || messageCache.getMessageList(SocketUtils.sessionKey).length == 0) ? null : messageCache.getMessageList(SocketUtils.sessionKey)[0]['msgId']
+        });
+      }
+    });
   }
 
   @override
@@ -67,6 +81,7 @@ class ChatScreenState extends State<ChatScreen> {
   initEvent() {
     event.on('current', handleNormalMsg);
     event.on('join', handleJoinSuccess);
+    event.on('sendSuccess', handleSendSuccess);
   }
 
   handleJoinSuccess(data) async {
@@ -87,9 +102,10 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   handleNormalMsg(data) {
-    bool isHistory = data['eventType'] == 'PullHisMsg';
+    bool isHis = data['eventType'] == 'PuHisMsgApp';
     setState(() {
       msgList = messageCache.setMassageList(SocketUtils.sessionKey, data['msgList'], isHistory);
+      isHistory = isHis;
     });
   }
 
@@ -103,13 +119,15 @@ class ChatScreenState extends State<ChatScreen> {
 //          )
         Container(
           margin: const EdgeInsets.only(bottom: 27.0),
-          constraints: BoxConstraints(
-              maxWidth: 316
-          ),
+          width: 316,
           child: Row(
             mainAxisAlignment: isOwn ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              item['isLoading'] == true ? Container(
+                margin: const EdgeInsets.only(top: 10, right: 10),
+                child: Icon( IconData(0xe838, fontFamily: 'iconfont'),color: Colors.blue,size: 15),
+              ) : Text(''),
               !isOwn ? ClipOval(
                   child: chatUser['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
                     imageUrl: 'http://118.31.126.46:8080/' + chatUser['headUrl'],
@@ -124,11 +142,11 @@ class ChatScreenState extends State<ChatScreen> {
                   ),
                   margin: const EdgeInsets.only(right: 16.0),
                   padding: const EdgeInsets.only(left: 14, right: 14, top: 12, bottom: 12),
-                  alignment: Alignment.centerRight,
                   constraints: BoxConstraints(
-                      minHeight: 20
+                      minHeight: 20,
+                      maxWidth: 250
                   ),
-                  child: Text(item['content'], softWrap: true, textAlign: TextAlign.right, style: TextStyle(color: Colors.white))
+                  child: Text(item['content'], softWrap: true, style: TextStyle(color: Colors.white))
               ),
               isOwn ? ClipOval(
                   child: user['headUrl'] == null ? new Image.asset('images/default-pic.png', width: 50, height: 50, fit: BoxFit.fill) : CachedNetworkImage(
@@ -137,7 +155,7 @@ class ChatScreenState extends State<ChatScreen> {
                     height: 50,
                     fit: BoxFit.fill,
                   )
-              ) : Container(
+              ) :  Container(
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: Color(0xFF007BFF), width: 1),
@@ -145,24 +163,29 @@ class ChatScreenState extends State<ChatScreen> {
                   ),
                   margin: const EdgeInsets.only(left: 16.0),
                   padding: const EdgeInsets.only(left: 14, right: 14, top: 12, bottom: 12),
-                  alignment: Alignment.centerLeft,
                   constraints: BoxConstraints(
-                      minHeight: 20
+                    minHeight: 20,
+                    maxWidth: 250
                   ),
-                  child: Text(item['content'], softWrap: true, textAlign: TextAlign.left)
+                  child: Text(item['content'], softWrap: true)
               ),
             ],
           ),
         ),
       );
     });
+    if (widgetList.length > 0 && isHistory == false)
+      Timer(Duration(milliseconds: 200  ),
+              () => _scrollController.position.jumpTo(_scrollController.position.maxScrollExtent));
     return ListView(
-        children: widgetList
+        children: widgetList,
+        controller: _scrollController
     );
   }
 
   void handleSendMsg(val) {
     print('发送消息: $val');
+    int sendId = SocketUtils.getSendMsgId();
     SocketUtils.sendMessage({
       'wuyanSessionId': prefs.getString('wuyanSessionId'),
       'sessionId': SocketUtils.sessionId,
@@ -174,10 +197,27 @@ class ChatScreenState extends State<ChatScreen> {
       'msgCreateTime': DateTime.now().millisecondsSinceEpoch,
       'msgType': 1,
       'sessionType': 1,
-      'sendMsgId': SocketUtils.getSendMsgId(),
+      'sendMsgId': sendId,
       'role': chatUser['role']
     });
+    setState(() {
+      msgList = messageCache.setMassageList(SocketUtils.sessionKey, [{
+        'senderId': user['id'],
+        'content': val,
+        'msgId': DateTime.now().millisecondsSinceEpoch,
+        'isLoading': true,
+        'sendMsgId': sendId,
+      }], isHistory);
+      messageCache.setLoadingMap(sendId, msgList.length - 1);
+      isHistory = false;
+    });
     sendController.clear();
+  }
+
+  handleSendSuccess(data) {
+    setState(() {
+      msgList = messageCache.setSendSuccess(SocketUtils.sessionKey, data['sendMsgId'], data);
+    });
   }
 
   @override
