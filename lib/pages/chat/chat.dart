@@ -56,7 +56,7 @@ class ChatScreenState extends State<ChatScreen> {
     super.initState();
     initEvent();
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == 0) {
+      if (_scrollController.position.pixels == 0 && msgList.length > 10) {
         SocketUtils.queryHistoryMsg({
           'wuyanSessionId': prefs.getString('wuyanSessionId'),
           'sessionId': SocketUtils.sessionId,
