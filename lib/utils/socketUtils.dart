@@ -58,6 +58,7 @@ class SocketUtils {
     socket.onReconnectFailed(_handleReconnectError);
     socket.onError(_handleError);
     socket.on('PuMsg', _handleDataEvent);
+    socket.on('PuMsgApp', _handleDataEvent);
     socket.on('ConnectActionApp', _handleConnectBack);
     socket.on('OnMsgAckApp', _handleSendMsgBack);
     socket.on('PuHisMsgApp', __handlePuHisMsgBack);
@@ -155,8 +156,8 @@ class SocketUtils {
   }
 
   _handleFeedbackMsg(lastMsgId) {
-    Map data = {'msgSyncId': lastMsgId, 'userId': user['id']};
-    socket.emit('AcceptAck', [data]);
+    Map data = {'msgSyncId': lastMsgId, 'curOpenSessionId': sessionId, 'wuyanSessionId': prefs.getString('wuyanSessionId')};
+    socket.emit('PuMsgAckApp', [data]);
   }
 
   static handlePullNewMsg(Map data) {

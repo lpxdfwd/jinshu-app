@@ -35,6 +35,7 @@ class MessageCache {
   }
 
   List setMassageList(String key, List list, bool isHis) {
+
     if (!messageCacheMap.containsKey(key)) {
       messageCacheMap[key] = list;
     } else {
